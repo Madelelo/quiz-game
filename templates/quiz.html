@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Europeiske hovedsteder</title>
+  </head>
+  <body>
+    <div>
+      <h1>Gjett hovedstaden!</h1>
+      <p>{{question}}</p>
+      <form action="check_answer" method="post">
+        <label for="answer"> Skriv inn ditt svar:</label>
+        <input type="text" id="{{question_id}}" name="answer" />
+        <input type="submit" value="Sjekk svaret ditt her!" />
+      </form>
+    </div>
+  </body>
+</html>
