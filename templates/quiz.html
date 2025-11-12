@@ -9,10 +9,11 @@
     <div>
       <h1>Gjett hovedstaden!</h1>
       <p>{{question}}</p>
-      <form action="check_answer" method="post">
+      <form action="check_answer?id={{id}}" method="post">
         <label for="answer"> Skriv inn ditt svar:</label>
         <input type="text" id="{{question_id}}" name="answer" />
         <input type="submit" value="Sjekk svaret ditt her!" />
+        <p>{{id}}</p>
       </form>
     </div>
   </body>

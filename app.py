@@ -17,19 +17,26 @@ QUIZ_DATA = {
     10: {"question": "Hva er hovedstaden i Polen?", "answer": "Warszawa"}
 }
 
-# Velger ett spørsmål når appen starter 
-RANDOM_QUESTION_ID = random.randint(1, 10)
+
 
 @app.route('/')
 def quiz():
+    # Velger ett spørsmål når appen starter 
+    RANDOM_QUESTION_ID = random.randint(1, 10)
+    
     # Viser spørsmålet på nettsiden
-    return render_template('quiz.html', question=QUIZ_DATA[RANDOM_QUESTION_ID]['question'])
+    return render_template('quiz.html', question=QUIZ_DATA[RANDOM_QUESTION_ID]['question'], id=RANDOM_QUESTION_ID)
 
 @app.route('/check_answer', methods=['POST', 'GET'])
 def check_answer():
     # Leser svaret fra skjemaet og sammenligner (lower() gjør om til små bokstaver så det ikke har noe å si)
     user_answer = request.form['answer'].lower()
-    correct_answer = QUIZ_DATA[RANDOM_QUESTION_ID]['answer']
+   
+    # Henter id for spørsmålet fra url-en og gjør om til et tall
+    question_id = int(request.args.get('id'))
+
+    # Henter riktig svar 
+    correct_answer = QUIZ_DATA[question_id]['answer']
 
     if user_answer == correct_answer.lower():
         return render_template('result.html', status='Riktig!')
