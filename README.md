@@ -2,6 +2,8 @@
 
 Dette er en enkel Flask-app for diverse quiz-spørsmål. I første omgang hovedsteder, men vi håper å lage flere kategorier etter hvert.
 
+En steg for steg tutorial på hvordan lage denne appen [finner du her.](https://github.com/Madelelo/quiz-game/blob/main/HowToMake.md)
+
 ## Installasjon
 
 1. Klon repositoriet:
