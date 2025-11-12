@@ -109,14 +109,19 @@ RANDOM_QUESTION_ID = random.randint(1, 10)
 ```python
 @app.route('/')
 def quiz():
-    return render_template('quiz.html', question=QUIZ_DATA[RANDOM_QUESTION_ID]['question'])
+    # Velger ett spørsmål når appen starter
+    RANDOM_QUESTION_ID = random.randint(1, 10)
+
+    # Viser spørsmålet på nettsiden
+    return render_template('quiz.html', question=QUIZ_DATA[RANDOM_QUESTION_ID]['question'], id=RANDOM_QUESTION_ID)
 ```
 
 **Hva skjer her?**
 
 - `@app.route('/')` - Dette er "ruten" når du går til `http://127.0.0.1:5000/`
+- `RANDOM_QUESTION_ID = random.randint(1, 10)` - **Hver gang** brukeren besøker `/`, velges et nytt tilfeldig spørsmål
 - `quiz()` - Funksjonen som kjøres når noen besøker denne ruten
-- `render_template('quiz.html', question=...)` - Åpner `quiz.html` og sender spørsmålet til den
+- `render_template('quiz.html', question=..., id=...)` - Åpner `quiz.html` og sender **både spørsmålet og ID-en** til den
   - Spørsmålet vises som `{{question}}` i HTML-filen
 
 NB! Her må du huske å lage html-filen `quiz.html` inne i `templates`-mappen. Se Steg 3 lengre ned for mer info.
@@ -133,8 +138,14 @@ Brukeren ser: "Hva er hovedstaden i Norge?"
 ```python
 @app.route('/check_answer', methods=['POST', 'GET'])
 def check_answer():
+    # Leser svaret fra skjemaet og sammenligner (lower() gjør om til små bokstaver så det ikke har noe å si)
     user_answer = request.form['answer'].lower()
-    correct_answer = QUIZ_DATA[RANDOM_QUESTION_ID]['answer']
+
+    # Henter id for spørsmålet fra url-en og gjør om til et tall
+    question_id = int(request.args.get('id'))
+
+    # Henter riktig svar
+    correct_answer = QUIZ_DATA[question_id]['answer']
 
     if user_answer == correct_answer.lower():
         return render_template('result.html', status='Riktig!')
@@ -152,9 +163,14 @@ def check_answer():
 
    - `.lower()` - Konverterer til små bokstaver (så "Oslo" og "oslo" blir det samme)
 
-3. `correct_answer = QUIZ_DATA[RANDOM_QUESTION_ID]['answer']` - Henter det korrekte svaret
+3. `question_id = int(request.args.get('id'))` - **Henter ID-en fra URL-parameteren**
 
-4. `if user_answer == correct_answer.lower():` - Sammenligner svarene
+   - `request.args.get('id')` - Leser `id` parameteren fra URL-en (f.eks. `?id=1`)
+   - `int(...)` - Konverterer teksten til et tall slik at vi kan bruke det som dictionary-nøkkel
+
+4. `correct_answer = QUIZ_DATA[question_id]['answer']` - Henter det korrekte svaret basert på ID-en som ble sendt
+
+5. `if user_answer == correct_answer.lower():` - Sammenligner svarene
    - Hvis riktig: Vis "Riktig!"
    - Hvis feil: Vis "Nope, prøv igjen!"
 
@@ -189,9 +205,9 @@ if __name__ == '__main__':
     <div>
       <h1>Gjett hovedstaden!</h1>
       <p>{{question}}</p>
-      <form action="check_answer" method="post">
+      <form action="check_answer?id={{id}}" method="post">
         <label for="answer">Skriv inn ditt svar:</label>
-        <input type="text" id="{{question_id}}" name="answer" />
+        <input type="text" id="answer" name="answer" />
         <input type="submit" value="Sjekk svaret ditt her!" />
       </form>
     </div>
@@ -199,13 +215,16 @@ if __name__ == '__main__':
 </html>
 ```
 
-**Hva skjer here?**
+**Hva skjer her?**
 
-| Del                            | Forklaring                                                |
-| ------------------------------ | --------------------------------------------------------- |
-| `<p>{{question}}</p>`          | **Flask-variabel** - Spørsmålet fra `app.py` vises her    |
-| `<form action="check_answer">` | Sender data til `/check_answer` ruten når skjemaet sendes |
-| `<input type="submit">`        | Knapp som sender skjemaet                                 |
+| Del                                      | Forklaring                                               |
+| ---------------------------------------- | -------------------------------------------------------- |
+| `<p>{{question}}</p>`                    | **Flask-variabel** - Spørsmålet fra `app.py` vises her   |
+| `<form action="check_answer?id={{id}}">` | **Sendt ID-en som URL-parameter** når skjemaet submittes |
+| `<input type="text" name="answer">`      | Tekstfelt der bruker skriver sitt svar                   |
+| `<input type="submit">`                  | Knapp som sender skjemaet                                |
+
+**Viktig:** `action="check_answer?id={{id}}"` - Dette sikrer at ID-en blir sendt videre til `/check_answer` ruten når brukeren submitter svaret.
 
 ---
 
@@ -273,15 +292,17 @@ Du vil se spørsmålet, et tekstfelt, og en knapp ✨
    ↓
 5. Du skriver inn et svar og klikker "Sjekk svaret ditt her!"
    ↓
-6. Skjemaet sender POST-forespørsel til /check_answer
+6. Skjemaet sender POST-forespørsel til /check_answer?id=1
    ↓
 7. Flask kjører check_answer()-funksjonen
    ↓
-8. Den sammenligner ditt svar med det korrekte svaret
+8. Den leser ID-en fra URL-parameteren (?id=1)
    ↓
-9. Den viser result.html med "Riktig!" eller "Nope, prøv igjen!"
+9. Den sammenligner ditt svar med det korrekte svaret for spørsmål #1
    ↓
-10. Du klikker "Tilbake" og starter på nytt
+10. Den viser result.html med "Riktig!" eller "Nope, prøv igjen!"
+   ↓
+11. Du klikker "Tilbake" og starter på nytt med et nytt spørsmål
 ```
 
 ---
