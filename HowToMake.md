@@ -199,12 +199,12 @@ if __name__ == '__main__':
 </html>
 ```
 
-**Hva gjør denne?**
+**Hva skjer here?**
 
 | Del                            | Forklaring                                                |
-| ------------------------------ | --------------------------------------------------------- | --- |
+| ------------------------------ | --------------------------------------------------------- |
 | `<p>{{question}}</p>`          | **Flask-variabel** - Spørsmålet fra `app.py` vises her    |
-| `<form action="check_answer">` | Sender data til `/check_answer` ruten når skjemaet sendes |     |
+| `<form action="check_answer">` | Sender data til `/check_answer` ruten når skjemaet sendes |
 | `<input type="submit">`        | Knapp som sender skjemaet                                 |
 
 ---
@@ -226,7 +226,7 @@ if __name__ == '__main__':
 </html>
 ```
 
-**Hva gjør denne?**
+**Hva skjer her?**
 
 | Del                         | Forklaring                                            |
 | --------------------------- | ----------------------------------------------------- |
@@ -343,7 +343,7 @@ Her er noen idéer til å utvikle appen videre:
 A: Et lett Python-rammeverk for å lage web-apper. Det gjør det enkelt å lage ruter og vise HTML-sider.
 
 **Q: Hva er `{{question}}`?**  
-A: En Jinja2-template variabel. Flask bytter den ut med det faktiske spørsmålet før siden vises.
+A: En variabel som kan sendes fra app.py til HTML. Flask bytter den ut med det faktiske spørsmålet før siden vises.
 
 **Q: Hvorfor bruker vi `.lower()`?**  
 A: For å gjøre sammenligningen case-insensitive. "Oslo" og "oslo" blir behandlet som det samme.
